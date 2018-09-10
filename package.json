@@ -1,0 +1,23 @@
+{
+  "name": "waiters-app",
+  "version": "1.0.0",
+  "description": "App to show waiter availability and allow waiters to choose days.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-flash": "0.0.2",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
+    "mocha": "^5.2.0",
+    "pg": "^7.4.3"
+  }
+}

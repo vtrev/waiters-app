@@ -1,0 +1,44 @@
+/* GLOBAL STYLES */
+input:focus,
+button,
+select,
+input:active {
+    outline: none !important;
+    box-shadow: none;
+}
+
+nav {
+    background: red;
+    height: 100px;
+}
+
+/* ============================================================================================================== */
+/*Radio buttons style*/
+.radio-toolbar {
+    margin-top: 10px;
+}
+
+.radio-toolbar input[type="checkbox"] {
+    display: none;
+}
+
+.radio-toolbar label {
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    font-size: 16px;
+    border: 1px solid gray;
+    /* border-radius: 50%; */
+}
+
+.radio-toolbar span {
+    font-size: 18px;
+}
+
+.radio-toolbar label:hover {
+    background-color: #dfd;
+}
+
+.radio-toolbar input[type="checkbox"]:checked+label {
+    background-color: gray;
+}
