@@ -21,7 +21,7 @@ if (process.env.DATABASE_URL && !local) {
     useSSL = true;
 }
 // which db connection to use
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:pass@localhost:5432/waiters';
+const connectionString = process.env.DATABASE_URL || 'postgresql://vusi:8423@192.168.0.33:5432/waiters';
 
 const pool = new Pool({
     connectionString,

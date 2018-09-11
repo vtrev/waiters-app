@@ -11,8 +11,8 @@ CREATE TABLE waiters
 CREATE TABLE weekdays
 (
     id integer NOT NULL,
-    weekdays text NOT NULL,
-    CONSTRAINT weekdays_pkey PRIMARY KEY (id)
+    weekday text NOT NULL,
+    CONSTRAINT weekday_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE shifts
