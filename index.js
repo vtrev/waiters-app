@@ -21,7 +21,7 @@ if (process.env.DATABASE_URL && !local) {
     useSSL = true;
 }
 // which db connection to use
-const connectionString = process.env.DATABASE_URL || 'postgresql://vusi:8423@192.168.0.33:5432/waiters';
+const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:pass@127.0.0.1:5432/waiters';
 
 const pool = new Pool({
     connectionString,
@@ -44,7 +44,6 @@ app.engine('handlebars', exphbs({
 
 app.set('view engine', 'handlebars');
 app.use('/', express.static(__dirname + '/public'));
-// app.use(express.static('public'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -59,14 +58,34 @@ app.get('/', function (req, res) {
 app.get('/waiters/:username', function (req, res) {
     let username = req.params.username;
     res.render('home', {
-        welcomeMessage: 'Hello ' + username + ' How can  we help you?'
+        welcomeMessage: 'Hello ' + username + '! When would you like to work?'
     });
 });
 
-app.post('/waiters/:username', function (req, res) {
-    let days = req.body.weekdays;
-    let user = req.params.username;
-    console.log(user, days)
+app.post('/waiters/:username', async function (req, res) {
+    let dataFromUser = {};
+    dataFromUser.days = req.body.weekdays;
+    let username = req.params.username;
+    let userId = await waitersInstance.getUserId(username);
+    if (userId !== '!user') {
+        dataFromUser.userId = userId;
+        await waitersInstance.storeWaiterData(dataFromUser);
+        req.flash('info', 'Thanks ' + username + ' your preferred working days have been captured.');
+        res.render('home');
+    } else if (userId == '!user') {
+        req.flash('info', 'Sorry, ' + username + ' does not seem to be a valid waiter name');
+        res.render('home');
+    }
+});
+app.get('/admin', async function (req, res) {
+
+    let waiterData = await waitersInstance.getWaiterData();
+    let shifts = await waitersInstance.makeShifts(waiterData);
+    let shiftStatus = await waitersInstance.makeShiftStatus(shifts);
+    res.render('admin', {
+        status: shiftStatus,
+        count: shifts
+    });
 })
 
 //FIRE TO THE SERVER  

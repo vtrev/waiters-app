@@ -1,36 +1,41 @@
-<div>
+<div class="row center">
+    <div class="col-12 inblock">
+        {{welcomeMessage}}</div>
+</div>
+<div class="row center">
+    <div class="col-12">
+        <form id="userDays" method="POST" action="">
 
+            <br>
+            <div class="in-block col-12 radio-toolbar">
 
+                <input type="checkbox" name="weekdays" value="0" id="0">
+                <label for="0">Monday</label>
 
-    {{welcomeMessage}}</div>
+                <input type="checkbox" name="weekdays" value="1" id="1">
 
-<form id="userDays" method="POST" action="">
+                <label for="1">Tuesday</label>
+                <input type="checkbox" name="weekdays" value="2" id="2">
 
-    <br>
-    <div class="in-block col-12 radio-toolbar">
+                <label for="2">Wednesday</label>
+                <input type="checkbox" name="weekdays" value="3" id="3">
 
-        <input type="checkbox" name="weekdays" value="0" id="0">
-        <label for="0">Monday</label>
+                <label for="3">Thursday</label>
+                <input type="checkbox" name="weekdays" value="4" id="4">
 
-        <input type="checkbox" name="weekdays" value="1" id="1">
+                <label for="4">Friday</label>
 
-        <label for="1">Tuesday</label>
-        <input type="checkbox" name="weekdays" value="2" id="2">
+                <input type="checkbox" name="weekdays" value="5" id="5">
 
-        <label for="2">Wednesday</label>
-        <input type="checkbox" name="weekdays" value="3" id="3">
+                <label for="5">Saturday</label>
+                <input type="checkbox" name="weekdays" value="6" id="6">
 
-        <label for="3">Thursday</label>
-        <input type="checkbox" name="weekdays" value="4" id="4">
-
-        <label for="4">Friday</label>
-
-        <input type="checkbox" name="weekdays" value="5" id="5">
-
-        <label for="5">Saturday</label>
-        <input type="checkbox" name="weekdays" value="6" id="6">
-
-        <label for="6">Sunday</label>
-        <button type="submit">Submit</button>
+                <label for="6">Sunday</label>
+                <button type="submit">Submit</button>
+            </div>
     </div>
-</form>
+    </form>
+</div>
+<div class="row">
+    <div class="col-12 center">{{messages.info}}</div>
+</div>

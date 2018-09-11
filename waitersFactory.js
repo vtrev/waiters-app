@@ -1,26 +1,19 @@
 module.exports = function (pool) {
-    let dataFromUser = {};
-    let waiterData = {};
-
-    let setUser = function (username) {
-        dataFromUser.name = username;
-    };
-
-    let setDays = function (days) {
-        dataFromUser.days = days;
-    };
-
     let getUserId = async function (username) {
         const sql = 'SELECT id FROM waiters WHERE name =$1';
         let result = await pool.query(sql, [username]);
-        let userId = result.rows[0].id;
-        return userId
+        if (result.rowCount == 1) {
+            let userId = result.rows[0].id;
+            return userId
+        } else {
+            return '!user'
+        }
     };
 
 
     let storeWaiterData = async function (data) {
-        let waiterId = data.userId; // 
-        let days = data.days; // 
+        let waiterId = data.userId;
+        let days = data.days;
 
         for (const day of days) {
             const sql = 'INSERT into shifts (waiter_id,weekday_id) values($1,$2)';
@@ -75,7 +68,6 @@ module.exports = function (pool) {
     let makeShiftStatus = function (shifts) {
         let shiftsWithStatus = {};
         try {
-            // loop through the days, if a day has < 3 mark insuffucuent
             for (const day in shifts) {
                 if (shifts[day] < 3) {
                     shiftsWithStatus[day] = 'bad';
@@ -88,8 +80,7 @@ module.exports = function (pool) {
                 }
             }
         } finally {
-            console.log(shiftsWithStatus)
-            // return shiftsWithStatus
+            return shiftsWithStatus
         }
     }
 
@@ -97,10 +88,6 @@ module.exports = function (pool) {
 
     // factory returns
     return {
-        waiterData,
-        setUser,
-        setDays,
-        dataFromUser,
         getUserId,
         storeWaiterData,
         getWaiterData,
