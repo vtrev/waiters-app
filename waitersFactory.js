@@ -81,6 +81,13 @@ module.exports = function (pool) {
             return shiftsWithStatus
         };
     };
+
+    let getWaiterShifts = async function (userId) {
+        const sql = 'SELECT weekday_id FROM shifts where waiter_id =$1';
+        const params = [userId];
+        let result = await pool.query(sql, params);
+        console.log(result.rows);
+    }
     let resetDb = async function () {
         await pool.query('DELETE from shifts');
         return 'Database has been cleared successfully'
@@ -93,6 +100,7 @@ module.exports = function (pool) {
         getWaiterData,
         makeShifts,
         makeShiftStatus,
+        getWaiterShifts,
         resetDb
     };
 };

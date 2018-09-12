@@ -77,6 +77,10 @@ nav button {
 }
 
 /* ======================================somethings */
+.selected {
+    background: gray;
+}
+
 .bad {
     font-size: 25px;
     color: white;

@@ -55,10 +55,13 @@ app.get('/', function (req, res) {
     res.render('home');
 })
 
-app.get('/waiters/:username', function (req, res) {
+app.get('/waiters/:username', async function (req, res) {
     let username = req.params.username;
+    let userId = await waitersInstance.getUserId(username);
+    await waitersInstance.getWaiterShifts(userId);
     res.render('home', {
-        welcomeMessage: 'Hello ' + username + '! When would you like to work?'
+        welcomeMessage: 'Hello ' + username + '! When would you like to work?',
+        days: {}
     });
 });
 
