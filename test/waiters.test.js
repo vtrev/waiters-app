@@ -21,7 +21,7 @@ describe('Waiters web app', function () {
 
     it('Should return  the correct waiter id', async function () {
         let result = await waitersInstance.getUserId('Jim');
-        assert.equal(result, 1);
+        assert.equal(result, 2);
     });
     // Two units (store and retrieve)are being tested at the same time to avoid repeating code
     it('Should store the waiter\'s data into the database && retrieve it', async function () {
