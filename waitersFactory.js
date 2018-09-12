@@ -60,10 +60,8 @@ module.exports = function (pool) {
             }
         } finally {
             return shiftCount
-        }
-
-
-    }
+        };
+    };
 
     let makeShiftStatus = function (shifts) {
         let shiftsWithStatus = {};
@@ -81,17 +79,20 @@ module.exports = function (pool) {
             }
         } finally {
             return shiftsWithStatus
-        }
-    }
+        };
+    };
+    let resetDb = async function () {
+        await pool.query('DELETE from shifts');
+        return 'Database has been cleared successfully'
 
-
-
+    };
     // factory returns
     return {
         getUserId,
         storeWaiterData,
         getWaiterData,
         makeShifts,
-        makeShiftStatus
-    }
-}
+        makeShiftStatus,
+        resetDb
+    };
+};

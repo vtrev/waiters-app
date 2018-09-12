@@ -19,6 +19,11 @@ h3 {
     text-align: center;
 }
 
+button {
+    width: 120px;
+    height: 40px;
+}
+
 /* ============================================================================================================== */
 /*Radio buttons style*/
 .radio-toolbar {
@@ -73,15 +78,21 @@ nav button {
 
 /* ======================================somethings */
 .bad {
-    color: red;
+    font-size: 25px;
+    color: white;
+    background: red;
 }
 
 .ok {
-    color: orange;
+    font-size: 25px;
+    color: white;
+    background: orange;
 }
 
 .good {
-    color: lime;
+    font-size: 25px;
+    color: white;
+    background: lime;
 }
 
 /* ============================FOOTER==================== */
@@ -92,4 +103,31 @@ footer {
     bottom: 0;
     background: blue;
     margin-top: 50px;
+}
+
+
+/* ================================ADMIN TABLE================================= */
+table {
+    border-collapse: collapse;
+    width: 100%
+}
+
+table,
+th,
+td {
+    text-align: center;
+    border: 1px solid black;
+}
+
+th {
+    height: 50px;
+    background: skyblue;
+}
+
+td {
+    height: 45px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
 }

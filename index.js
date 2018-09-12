@@ -86,6 +86,17 @@ app.get('/admin', async function (req, res) {
         status: shiftStatus,
         count: shifts
     });
+});
+app.post('/admin', async function (req, res) {
+    let message = await waitersInstance.resetDb();
+    req.flash('info', message);
+    let waiterData = await waitersInstance.getWaiterData();
+    let shifts = await waitersInstance.makeShifts(waiterData);
+    let shiftStatus = await waitersInstance.makeShiftStatus(shifts);
+    res.render('admin', {
+        status: shiftStatus,
+        count: shifts
+    })
 })
 
 //FIRE TO THE SERVER  

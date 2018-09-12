@@ -19,15 +19,6 @@ describe('Waiters web app', function () {
         await pool.query('DELETE from shifts');
     });
 
-    // Testing method bla bla bla
-    // it('Should set name of the user in an object', function () {
-    //     waitersInstance.setUser('Vusi');
-    //     assert.equal(waitersInstance.dataFromUser.name, 'Vusi');
-    // });
-    // it('Should set the days a user wants to work', function () {
-    //     waitersInstance.setDays([0, 3, 4, 5]);
-    //     assert.deepEqual(waitersInstance.dataFromUser.days, [0, 3, 4, 5]);
-    // });
     it('Should return  the correct waiter id', async function () {
         let result = await waitersInstance.getUserId('Jim');
         assert.equal(result, 1);
