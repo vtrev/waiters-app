@@ -9,7 +9,7 @@ node_js:
 
 before_script:
   - psql -c 'create database  waiters;' -U postgres
-  - psql -U postgres -d registrations -a -f tables.sql
+  - psql -U postgres -d waiters -a -f tables.sql
 
 addons:
     apt:
