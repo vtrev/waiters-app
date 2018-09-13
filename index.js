@@ -58,10 +58,10 @@ app.get('/', function (req, res) {
 app.get('/waiters/:username', async function (req, res) {
     let username = req.params.username;
     let userId = await waitersInstance.getUserId(username);
-    await waitersInstance.getWaiterShifts(userId);
+    let userShifts = await waitersInstance.getWaiterShifts(userId);
     res.render('home', {
         welcomeMessage: 'Hello ' + username + '! When would you like to work?',
-        days: {}
+        days: userShifts
     });
 });
 
@@ -69,19 +69,31 @@ app.post('/waiters/:username', async function (req, res) {
     let dataFromUser = {};
     dataFromUser.days = req.body.weekdays;
     let username = req.params.username;
+    await waitersInstance.clear(username);
     let userId = await waitersInstance.getUserId(username);
-    if (userId !== '!user') {
-        dataFromUser.userId = userId;
-        await waitersInstance.storeWaiterData(dataFromUser);
-        req.flash('info', 'Thanks ' + username + ' your preferred working days have been captured.');
-        res.render('home');
-    } else if (userId == '!user') {
-        req.flash('info', 'Sorry, ' + username + ' does not seem to be a valid waiter name');
-        res.render('home');
-    }
+    dataFromUser.userId = userId;
+    await waitersInstance.storeWaiterData(dataFromUser);
+    let userShifts = await waitersInstance.getWaiterShifts(userId);
+    req.flash('info', 'Thanks ' + username + ' your preferred working days have been captured.');
+    res.render('home', {
+        days: userShifts
+    });
 });
 app.get('/admin', async function (req, res) {
+    let namedShifts = await waitersInstance.getAdminShifts();
+    let waiterData = await waitersInstance.getWaiterData();
+    let shifts = await waitersInstance.makeShifts(waiterData);
+    let shiftStatus = await waitersInstance.makeShiftStatus(shifts);
+    res.render('admin', {
+        status: shiftStatus,
+        count: shifts,
+        updatedShifts: namedShifts
+    });
+});
+app.post('/admin', async function (req, res) {
 
+    let message = await waitersInstance.clear('everything');
+    req.flash('info', message);
     let waiterData = await waitersInstance.getWaiterData();
     let shifts = await waitersInstance.makeShifts(waiterData);
     let shiftStatus = await waitersInstance.makeShiftStatus(shifts);
@@ -90,17 +102,6 @@ app.get('/admin', async function (req, res) {
         count: shifts
     });
 });
-app.post('/admin', async function (req, res) {
-    let message = await waitersInstance.resetDb();
-    req.flash('info', message);
-    let waiterData = await waitersInstance.getWaiterData();
-    let shifts = await waitersInstance.makeShifts(waiterData);
-    let shiftStatus = await waitersInstance.makeShiftStatus(shifts);
-    res.render('admin', {
-        status: shiftStatus,
-        count: shifts
-    })
-})
 
 //FIRE TO THE SERVER  
 app.listen(PORT, function () {

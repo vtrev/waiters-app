@@ -48,9 +48,9 @@ button {
     font-size: 18px;
 }
 
-.radio-toolbar label:hover {
+/* .radio-toolbar label:hover {
     background-color: skyblue;
-}
+} */
 
 .radio-toolbar input[type="checkbox"]:checked+label {
     background-color: skyblue;
@@ -82,21 +82,21 @@ nav button {
 }
 
 .bad {
-    font-size: 25px;
+    font-size: 15px;
     color: white;
     background: red;
 }
 
 .ok {
-    font-size: 25px;
+    font-size: 15px;
     color: white;
-    background: orange;
+    background: lime;
 }
 
 .good {
-    font-size: 25px;
+    font-size: 15px;
     color: white;
-    background: lime;
+    background: orange;
 }
 
 /* ============================FOOTER==================== */
@@ -129,7 +129,7 @@ th {
 }
 
 td {
-    height: 45px;
+    height: 60px;
 }
 
 tr:nth-child(even) {

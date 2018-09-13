@@ -1,4 +1,12 @@
 module.exports = function (pool) {
+
+    let createUser = async function (username) {
+        const sql = 'INSERT INTO waiters (name) values($1)';
+        const params = [username];
+        await pool.query(sql, params);
+    }
+
+
     let getUserId = async function (username) {
         const sql = 'SELECT id FROM waiters WHERE name =$1';
         let result = await pool.query(sql, [username]);
@@ -6,7 +14,10 @@ module.exports = function (pool) {
             let userId = result.rows[0].id;
             return userId
         } else {
-            return '!user'
+            await createUser(username);
+            result = await pool.query(sql, [username]);
+            let userId = result.rows[0].id
+            return userId
         }
     };
 
@@ -21,7 +32,6 @@ module.exports = function (pool) {
             let result = await pool.query(sql, params);
         };
     };
-
     let getWaiterData = async function () {
         const sql = 'SELECT * FROM shifts';
         let result = await pool.query(sql);
@@ -83,15 +93,76 @@ module.exports = function (pool) {
     };
 
     let getWaiterShifts = async function (userId) {
+        let dayStatus = {
+            Monday: '',
+            Tuesday: '',
+            Wednesday: '',
+            Thursday: '',
+            Friday: '',
+            Saturday: '',
+            Sunday: ''
+        }
         const sql = 'SELECT weekday_id FROM shifts where waiter_id =$1';
         const params = [userId];
         let result = await pool.query(sql, params);
-        console.log(result.rows);
-    }
-    let resetDb = async function () {
-        await pool.query('DELETE from shifts');
-        return 'Database has been cleared successfully'
+        let dayIds = result.rows;
+        let dayKeys = Object.keys(dayStatus);
+        // now try
+        try {
+            for (let i = 0; i < dayKeys.length; i++) {
+                for (let j = 0; j < dayIds.length; j++) {
+                    if (i == dayIds[j].weekday_id) {
+                        let day = dayKeys[i];
+                        dayStatus[day] = 'checked';
+                    };
+                };
+            };
+        } finally {
+            return dayStatus
+        };
+    };
+    let clear = async function (username) {
+        let userId = await getUserId(username);
+        if (username == 'everything') {
+            await pool.query('DELETE from shifts');
+            return 'Database has been cleared successfully'
+        } else {
+            const sql = 'DELETE FROM shifts WHERE waiter_id=$1';
+            const params = [userId];
+            await pool.query(sql, params);
+            return 'Records successfuly cleared for ' + username
+        }
 
+
+    };
+
+    let getAdminShifts = async function () {
+        let updatedShifts = {
+            Monday: '',
+            Tuesday: '',
+            Wednesday: '',
+            Thursday: '',
+            Friday: '',
+            Saturday: '',
+            Sunday: ''
+        };
+        const sql = "select weekday,name from weekdays  join shifts on shifts.weekday_id=weekdays.id join waiters on waiters.id=shifts.waiter_id";
+        let result = await pool.query(sql);
+        let shifts = result.rows;
+        let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        try {
+            for (let i = 0; i < shifts.length; i++) {
+                // console.log('shift day : ' + );
+                for (let j = 0; j < days.length; j++) {
+                    if (shifts[i].weekday == days[j]) {
+                        updatedShifts[days[j]] = updatedShifts[days[j]] + '  ' + shifts[i].name + ',';
+                    }
+
+                }
+            }
+        } finally {
+            return updatedShifts
+        };
     };
     // factory returns
     return {
@@ -101,6 +172,9 @@ module.exports = function (pool) {
         makeShifts,
         makeShiftStatus,
         getWaiterShifts,
-        resetDb
+        clear,
+        getAdminShifts,
+        createUser
+
     };
 };
