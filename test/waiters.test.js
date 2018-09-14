@@ -118,10 +118,5 @@ describe('Waiters web app', function () {
         assert.deepEqual(waitersInstance.makeShiftStatus(shifts), expectedResult);
     });
 
-    // //Testing the createUser funtion
-    // it('Should create a user and add them to the database', async function () {
-    //     await waitersInstance.createUser('Vusi');
-    //     let result = pool.query("SELECT * FROM waiters WHERE name='Vusi'");
-    //     console.log(result);
-    // })
+
 });

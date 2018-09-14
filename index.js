@@ -27,24 +27,20 @@ const pool = new Pool({
     connectionString,
     ssl: useSSL
 });
-
 const waitersInstance = WaitersFactory(pool);
 const route = router(waitersInstance);
 
-// Routes
+
+// app use
 app.use(session({
     secret: 'Tshimugaramafatha'
 }));
-
 app.use(flash());
-
 app.engine('handlebars', exphbs({
     defaultLayout: 'main',
 }));
-
 app.set('view engine', 'handlebars');
 app.use('/', express.static(__dirname + '/public'));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
@@ -53,56 +49,11 @@ app.use(bodyParser.urlencoded({
 // Routes
 app.get('/', function (req, res) {
     res.render('home');
-})
-
-app.get('/waiters/:username', async function (req, res) {
-    let username = req.params.username;
-    let userId = await waitersInstance.getUserId(username);
-    let userShifts = await waitersInstance.getWaiterShifts(userId);
-    res.render('home', {
-        welcomeMessage: 'Hello ' + username + '! When would you like to work?',
-        days: userShifts
-    });
 });
-
-app.post('/waiters/:username', async function (req, res) {
-    let dataFromUser = {};
-    dataFromUser.days = req.body.weekdays;
-    let username = req.params.username;
-    await waitersInstance.clear(username);
-    let userId = await waitersInstance.getUserId(username);
-    dataFromUser.userId = userId;
-    console.log(dataFromUser);
-    await waitersInstance.storeWaiterData(dataFromUser);
-    let userShifts = await waitersInstance.getWaiterShifts(userId);
-    req.flash('info', 'Thanks ' + username + ' your preferred working days have been captured.');
-    res.render('home', {
-        days: userShifts
-    });
-});
-app.get('/admin', async function (req, res) {
-    let namedShifts = await waitersInstance.getAdminShifts();
-    let waiterData = await waitersInstance.getWaiterData();
-    let shifts = await waitersInstance.makeShifts(waiterData);
-    let shiftStatus = await waitersInstance.makeShiftStatus(shifts);
-    res.render('admin', {
-        status: shiftStatus,
-        count: shifts,
-        updatedShifts: namedShifts
-    });
-});
-app.post('/admin', async function (req, res) {
-
-    let message = await waitersInstance.clear('everything');
-    req.flash('info', message);
-    let waiterData = await waitersInstance.getWaiterData();
-    let shifts = await waitersInstance.makeShifts(waiterData);
-    let shiftStatus = await waitersInstance.makeShiftStatus(shifts);
-    res.render('admin', {
-        status: shiftStatus,
-        count: shifts
-    });
-});
+app.get('/waiters/:username', route.getWaiters);
+app.post('/waiters/:username', route.postWaiters);
+app.get('/admin', route.getAdmin);
+app.post('/admin', route.postAdmin);
 
 //FIRE TO THE SERVER  
 app.listen(PORT, function () {

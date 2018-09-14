@@ -5,7 +5,7 @@ module.exports = function (pool) {
         const params = [username];
         let result = await pool.query(sql, params);
         return result.rows[0].id
-    }
+    };
     let getUserId = async function (username) {
         const sql = 'SELECT id FROM waiters WHERE name =$1';
         let result = await pool.query(sql, [username]);
@@ -15,10 +15,8 @@ module.exports = function (pool) {
         } else {
             let newUserId = await createUser(username);
             return newUserId
-        }
+        };
     };
-
-
     let storeWaiterData = async function (data) {
         let waiterId = data.userId;
         let days = data.days;
@@ -43,7 +41,7 @@ module.exports = function (pool) {
             Friday: 0,
             Saturday: 0,
             Sunday: 0
-        }
+        };
         try {
 
             for (let i = 0; i < shiftData.length; i++) {
@@ -69,7 +67,6 @@ module.exports = function (pool) {
             return shiftCount
         };
     };
-
     let makeShiftStatus = function (shifts) {
         let shiftsWithStatus = {};
         try {
@@ -82,8 +79,8 @@ module.exports = function (pool) {
                 }
                 if (shifts[day] > 3) {
                     shiftsWithStatus[day] = 'good'
-                }
-            }
+                };
+            };
         } finally {
             return shiftsWithStatus
         };
@@ -98,7 +95,7 @@ module.exports = function (pool) {
             Friday: '',
             Saturday: '',
             Sunday: ''
-        }
+        };
         const sql = 'SELECT weekday_id FROM shifts where waiter_id =$1';
         const params = [userId];
         let result = await pool.query(sql, params);
@@ -128,11 +125,8 @@ module.exports = function (pool) {
             const params = [userId];
             await pool.query(sql, params);
             return 'Records successfuly cleared for ' + username
-        }
-
-
+        };
     };
-
     let getAdminShifts = async function () {
         let updatedShifts = {
             Monday: '',
@@ -151,9 +145,8 @@ module.exports = function (pool) {
             for (let i = 0; i < shifts.length; i++) {
                 for (let j = 0; j < days.length; j++) {
                     if (shifts[i].weekday == days[j]) {
-                        updatedShifts[days[j]] = updatedShifts[days[j]] + '  ' + shifts[i].name + ' , ';
+                        updatedShifts[days[j]] = updatedShifts[days[j]] + '  ' + shifts[i].name + '';
                     };
-
                 };
             };
         } finally {
