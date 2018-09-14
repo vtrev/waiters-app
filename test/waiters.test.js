@@ -17,41 +17,65 @@ const waitersInstance = Waiters(pool);
 describe('Waiters web app', function () {
     beforeEach(async function () {
         await pool.query('DELETE from shifts');
+        await pool.query('DELETE from waiters');
     });
+    // Testing for method that creates a user
+    it('Should create a user and add them into the database', async function () {
+        let result = await waitersInstance.createUser('Vusi');
+        let query = await pool.query("SELECT * FROM waiters WHERE name='Vusi'");
+        assert.equal(query.rowCount, 1);
+    });
+    //Testing for correct userId
 
     it('Should return  the correct waiter id', async function () {
-        let result = await waitersInstance.getUserId('Jim');
-        assert.equal(result, 2);
+        let Mpume = await waitersInstance.createUser('Mpume');
+        assert.equal(Mpume, await waitersInstance.getUserId('Mpume'));
     });
-    // Two units (store and retrieve)are being tested at the same time to avoid repeating code
-    it('Should store the waiter\'s data into the database && retrieve it', async function () {
-        let userDataSample = {
-            userId: 2,
-            days: [0, 4]
-        }
+    it('StoreWaiterData should store the days the waiter has checked && then be able to get them back using getWaiterShifts method ', async function () {
 
+        let jimmyId = await waitersInstance.createUser('Jimmy');
+        let userDataSample = {
+            userId: jimmyId,
+            days: [0, 4, 5]
+        };
+        let shifts = {
+            Monday: 'checked',
+            Tuesday: '',
+            Wednesday: '',
+            Thursday: '',
+            Friday: 'checked',
+            Saturday: 'checked',
+            Sunday: ''
+        };
         await waitersInstance.storeWaiterData(userDataSample);
-        let result = await waitersInstance.getWaiterData();
-        assert.deepEqual([{
-            waiter_id: 2,
-            weekday_id: 0
-        }, {
-            waiter_id: 2,
-            weekday_id: 4
-        }, ], result);
+        // getWaiterShifts should be able  to retrieve the stored days
+        let result = await waitersInstance.getWaiterShifts(jimmyId);
+        assert.deepEqual(result, shifts);
     });
+
+
+
 
     it('Should return information on waiters that have added their data on the app', async function () {
+        await waitersInstance.createUser('Vusi');
+        await waitersInstance.createUser('Thabang');
+        await waitersInstance.createUser('Mike');
+
+        async function getId(user) {
+
+            let id = await waitersInstance.getUserId(user);
+            return id
+        }
         let userDataSample0 = {
-            userId: 4,
+            userId: await getId('Mike'),
             days: [6, 4, 3]
         }
         let userDataSample1 = {
-            userId: 1,
+            userId: await getId('Thabang'),
             days: [0, 4, 3]
         }
         let userDataSample2 = {
-            userId: 3,
+            userId: await getId('Vusi'),
             days: [0, 4, 5]
         }
         let result = {
@@ -94,12 +118,10 @@ describe('Waiters web app', function () {
         assert.deepEqual(waitersInstance.makeShiftStatus(shifts), expectedResult);
     });
 
-    //Testing the createUser funtion
-    it('Should create a user and add them to the database', async function () {
-        await waitersInstance.createUser('Vusi');
-        let result = pool.query("SELECT * FROM waiters WHERE name='Vusi'");
-
-
-        console.log(result);
-    })
+    // //Testing the createUser funtion
+    // it('Should create a user and add them to the database', async function () {
+    //     await waitersInstance.createUser('Vusi');
+    //     let result = pool.query("SELECT * FROM waiters WHERE name='Vusi'");
+    //     console.log(result);
+    // })
 });

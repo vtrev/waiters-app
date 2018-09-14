@@ -72,6 +72,7 @@ app.post('/waiters/:username', async function (req, res) {
     await waitersInstance.clear(username);
     let userId = await waitersInstance.getUserId(username);
     dataFromUser.userId = userId;
+    console.log(dataFromUser);
     await waitersInstance.storeWaiterData(dataFromUser);
     let userShifts = await waitersInstance.getWaiterShifts(userId);
     req.flash('info', 'Thanks ' + username + ' your preferred working days have been captured.');

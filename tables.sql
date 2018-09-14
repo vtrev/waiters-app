@@ -39,9 +39,9 @@ insert into weekdays (id,weekday) values (5,'Saturday');
 insert into weekdays (id,weekday) values (6,'Sunday');
 
 
-insert into waiters (name) values ('Kim');
-insert into waiters (name) values ('Jim');
-insert into waiters (name) values ('Rick');
-insert into waiters (name) values ('Morty');
-insert into waiters (name) values ('Sama');
-insert into waiters (name) values ('Bart');
+-- insert into waiters (name) values ('Kim');
+-- insert into waiters (name) values ('Jim');
+-- insert into waiters (name) values ('Rick');
+-- insert into waiters (name) values ('Morty');
+-- insert into waiters (name) values ('Sama');
+-- insert into waiters (name) values ('Bart');

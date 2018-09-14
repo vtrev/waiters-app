@@ -1,12 +1,11 @@
 module.exports = function (pool) {
 
     let createUser = async function (username) {
-        const sql = 'INSERT INTO waiters (name) values($1)';
+        const sql = 'INSERT INTO waiters (name) values($1) returning id';
         const params = [username];
-        await pool.query(sql, params);
+        let result = await pool.query(sql, params);
+        return result.rows[0].id
     }
-
-
     let getUserId = async function (username) {
         const sql = 'SELECT id FROM waiters WHERE name =$1';
         let result = await pool.query(sql, [username]);
@@ -14,10 +13,8 @@ module.exports = function (pool) {
             let userId = result.rows[0].id;
             return userId
         } else {
-            await createUser(username);
-            result = await pool.query(sql, [username]);
-            let userId = result.rows[0].id
-            return userId
+            let newUserId = await createUser(username);
+            return newUserId
         }
     };
 
@@ -25,11 +22,10 @@ module.exports = function (pool) {
     let storeWaiterData = async function (data) {
         let waiterId = data.userId;
         let days = data.days;
-
         for (const day of days) {
-            const sql = 'INSERT into shifts (waiter_id,weekday_id) values($1,$2)';
+            const sql = 'INSERT into shifts (waiter_id,weekday_id) values($1,$2) returning waiter_id,weekday_id';
             const params = [waiterId, day];
-            let result = await pool.query(sql, params);
+            await pool.query(sql, params);
         };
     };
     let getWaiterData = async function () {
@@ -37,6 +33,7 @@ module.exports = function (pool) {
         let result = await pool.query(sql);
         return result.rows;
     }
+
     let makeShifts = function (shiftData) {
         let shiftCount = {
             Monday: 0,
@@ -152,14 +149,13 @@ module.exports = function (pool) {
         let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         try {
             for (let i = 0; i < shifts.length; i++) {
-                // console.log('shift day : ' + );
                 for (let j = 0; j < days.length; j++) {
                     if (shifts[i].weekday == days[j]) {
-                        updatedShifts[days[j]] = updatedShifts[days[j]] + '  ' + shifts[i].name + ',';
-                    }
+                        updatedShifts[days[j]] = updatedShifts[days[j]] + '  ' + shifts[i].name + ' , ';
+                    };
 
-                }
-            }
+                };
+            };
         } finally {
             return updatedShifts
         };
