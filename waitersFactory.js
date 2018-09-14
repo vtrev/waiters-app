@@ -85,17 +85,8 @@ module.exports = function (pool) {
             return shiftsWithStatus
         };
     };
-
     let getWaiterShifts = async function (userId) {
-        let dayStatus = {
-            Monday: '',
-            Tuesday: '',
-            Wednesday: '',
-            Thursday: '',
-            Friday: '',
-            Saturday: '',
-            Sunday: ''
-        };
+        let dayStatus = weekdays();
         const sql = 'SELECT weekday_id FROM shifts where waiter_id =$1';
         const params = [userId];
         let result = await pool.query(sql, params);
@@ -128,7 +119,37 @@ module.exports = function (pool) {
         };
     };
     let getAdminShifts = async function () {
-        let updatedShifts = {
+        let updatedShifts = weekdays();
+        const sql = "select weekday,name from weekdays  join shifts on shifts.weekday_id=weekdays.id join waiters on waiters.id=shifts.waiter_id";
+        let result = await pool.query(sql);
+        let shifts = result.rows;
+        let dayObject = weekdays();
+        let dayKeys = Object.keys(dayObject);
+        let days = [
+            dayKeys[0], dayKeys[1], dayKeys[2], dayKeys[3], dayKeys[4], dayKeys[5], dayKeys[6]
+        ];
+        try {
+            for (let i = 0; i < shifts.length; i++) {
+                for (let j = 0; j < days.length; j++) {
+                    if (shifts[i].weekday == days[j]) {
+                        updatedShifts[days[j]] = updatedShifts[days[j]] + shifts[i].name + ',';
+                    };
+                };
+            };
+        } finally {
+            for (day in updatedShifts) {
+                let weekdayString = updatedShifts[day];
+                let spitDays = weekdayString.split(',');
+                // remove the last element of list which is an empty space
+                spitDays.pop();
+                let fixedDays = spitDays.join();
+                updatedShifts[day] = fixedDays
+            }
+            return updatedShifts
+        };
+    };
+    let weekdays = function () {
+        let days = {
             Monday: '',
             Tuesday: '',
             Wednesday: '',
@@ -136,23 +157,9 @@ module.exports = function (pool) {
             Friday: '',
             Saturday: '',
             Sunday: ''
-        };
-        const sql = "select weekday,name from weekdays  join shifts on shifts.weekday_id=weekdays.id join waiters on waiters.id=shifts.waiter_id";
-        let result = await pool.query(sql);
-        let shifts = result.rows;
-        let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        try {
-            for (let i = 0; i < shifts.length; i++) {
-                for (let j = 0; j < days.length; j++) {
-                    if (shifts[i].weekday == days[j]) {
-                        updatedShifts[days[j]] = updatedShifts[days[j]] + '  ' + shifts[i].name + '';
-                    };
-                };
-            };
-        } finally {
-            return updatedShifts
-        };
-    };
+        }
+        return days
+    }
     // factory returns
     return {
         getUserId,
@@ -164,6 +171,5 @@ module.exports = function (pool) {
         clear,
         getAdminShifts,
         createUser
-
     };
 };
