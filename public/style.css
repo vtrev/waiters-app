@@ -95,20 +95,25 @@ nav button {
 
 .bad {
     font-size: 15px;
-    color: white;
     background: red;
 }
 
 .ok {
     font-size: 15px;
-    color: white;
     background: lime;
 }
 
 .good {
     font-size: 15px;
-    color: white;
     background: orange;
+}
+
+.indicators i {
+    color: black;
+    border: none;
+    border-radius: 50%;
+    font-size: 25px;
+
 }
 
 /* ============================FOOTER==================== */
